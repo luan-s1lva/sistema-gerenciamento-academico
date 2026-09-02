@@ -61,3 +61,7 @@ class SubmissionSerializer(serializers.Serializer):
     total_questoes = serializers.IntegerField()
     nota_obtida = serializers.IntegerField()
     status = serializers.CharField()
+
+class QuizSubmissionSerializer(serializers.Serializer):
+    discente_id = serializers.CharField()
+    respostas_enviadas = serializers.DictField(child=serializers.CharField(max_length=1))

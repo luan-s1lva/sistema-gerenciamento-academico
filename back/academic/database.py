@@ -12,7 +12,7 @@ bd = client[BD_NAME]
 
 #TABELAS
 users = bd["users"]
-users = bd["courses"]
-users = bd["classes"]
-users = bd["quizzes"]
-users = bd["submissions"]
+courses = bd["courses"]
+classes = bd["classes"]
+quizzes = bd["quizzes"]
+submissions = bd["submissions"]
