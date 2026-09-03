@@ -46,7 +46,7 @@ class ClassSerializer(serializers.Serializer):
     periodo = serializers.CharField()
     nome_turma = serializers.CharField()
     horario = serializers.CharField()
-    discentes_matriculados = serializers.DictField(child=serializers.CharField)
+    discentes_matriculados = serializers.DictField(child=serializers.CharField())
     turma = serializers.CharField()
     ativo = serializers.BooleanField()
 
@@ -56,7 +56,7 @@ class SubmissionSerializer(serializers.Serializer):
     turma_id = serializers.CharField()
     discente_id = serializers.CharField()
     data_submissao = serializers.DateTimeField()
-    respostas_enviadas = serializers.DictField(child=serializers.CharField)
+    respostas_enviadas = serializers.DictField(child=serializers.CharField())
     total_acertos = serializers.IntegerField()
     total_questoes = serializers.IntegerField()
     nota_obtida = serializers.IntegerField()
