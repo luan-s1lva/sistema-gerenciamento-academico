@@ -129,7 +129,7 @@ class SubmitQuizView(APIView):
         return Response({
             "mensagem": "Avaliação enviada com sucesso",
             "submissao_id": str(resultado.inserted_id),
-            "nota_final": nota_final,
+            "nota_obtida": nota_final,
             "total_acertos": total_acertos,
             "total_questoes": len(prova.get("questoes", [])),
         }, status=status.HTTP_201_CREATED)
