@@ -88,14 +88,14 @@ class SubmitQuizView(APIView):
         detalhes_correcao = {}
 
         gabarito_map = {
-            str(p["id"]): {
-                "correta": str(p.get("gabarito", "")).strip().upper(),
-                "valor": float(p.get("valor_questao", 0))
-            } for p in prova.get("questoes", [])
+            str(questao["id"]): {
+                "correta": str(questao.get("gabarito", "")).strip().upper(),
+                "valor": float(questao.get("valor_questao", 0))
+            } for questao in prova.get("questoes", [])
         }
 
-        for p_id, resposta_aluno in respostas.items():
-            _id = str(p_id)
+        for questao_id, resposta_aluno in respostas.items():
+            _id = str(questao_id)
             if _id in gabarito_map:
                 alternativa_correta = gabarito_map[_id]["correta"]
                 valor = gabarito_map[_id]["valor"]
@@ -116,7 +116,7 @@ class SubmitQuizView(APIView):
             "turma_id": prova.get("class_id"),
             "discente_id": discente_id,
             "data_submissao": datetime.now(),
-            "respotas_enviadas": respostas,
+            "respostas_enviadas": respostas,
             "detalhes_correcao": detalhes_correcao, 
             "total_acertos": total_acertos,
             "total_questoes": len(prova.get("questoes", [])),
