@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -138,6 +139,18 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+}
+
+SIMPLE_JWT = {
+    # Tempo de validade do token enviado nas requisições (ex: 2 horas)
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    
+    # Tempo de validade do refresh token (ex: 7 dias)
+    "REFRESH_TOKEN_LIFETIME": timedelta(hours=1),
+    
+    # Se o token de refresh deve ser rotacionado a cada uso
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": False,
 }
 
 CORS_ALLOW_ALL_ORIGINS = True

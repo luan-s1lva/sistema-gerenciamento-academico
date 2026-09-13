@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import QuizCreateView, VisualizeTestView, SubmitQuizView, LoginLocalMongoView
+from .views import QuizCreateView, VisualizeTestView, SubmitQuizView, LoginLocalMongoView, VisualizesQuizzesFromClass
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -8,6 +8,7 @@ from rest_framework_simplejwt.views import (
 urlpatterns = [
     path('prova/criar', QuizCreateView.as_view(), name = 'criar-prova'),
     path('prova/visualizar/<str:quiz_id>/', VisualizeTestView.as_view(), name = 'ver-prova'),
+    path('provas/<str:class_id>/', VisualizesQuizzesFromClass.as_view(), name = 'ver-provas'),
     path('prova/submeter/<str:quiz_id>/', SubmitQuizView.as_view(), name = 'enviar-prova'),
 
 
