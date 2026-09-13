@@ -5,8 +5,10 @@ from rest_framework import status
 from bson import ObjectId
 from bson.errors import InvalidId
 from datetime import datetime
-from .serializers import QuizzSerializer,QuizSubmissionSerializer
-from .database import quizzes, submissions
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth.hashers import check_password
+from .serializers import QuizzSerializer, QuizSubmissionSerializer, LocalLoginSerializer
+from .database import quizzes, submissions, users
 
 # Create your views here.
 
@@ -133,3 +135,53 @@ class SubmitQuizView(APIView):
             "total_acertos": total_acertos,
             "total_questoes": len(prova.get("questoes", [])),
         }, status=status.HTTP_201_CREATED)
+
+class LoginLocalMongoView(APIView):
+    def post(self, request):
+        serializer = LocalLoginSerializer(data = request.data)
+
+        if not serializer.is_valid():
+            return Response({"erro": f"Credenciais inválidas: {serializer.errors}"}, status=status.HTTP_400_BAD_REQUEST)
+
+        usuario = None
+
+        email = serializer.validated_data["email"]
+        senha = serializer.validated_data["password"]
+
+        try:
+            usuario = users.find_one({"email": email})
+        except Exception as e:
+            return Response({"erro": f"Erro de conexão com o banco: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        if not usuario:
+            return Response(
+                {"detail": "Email não encontrado."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        password_hash = usuario.get("password")
+        if not password_hash:
+            return Response({"erro": "Essa conta usa apenas login federado"}, status=status.HTTP_403_FORBIDDEN)
+
+        if not check_password(senha, usuario["password"]):
+            return Response(
+                {"detail": "Senha inválida"},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        refresh = RefreshToken()
+        refresh["user_id"] = str(usuario["_id"])
+        refresh["matricula"] = usuario["matricula"]
+        refresh["nome"] = usuario["nome"]
+        refresh["role"] = usuario["role"]
+
+        return Response({
+            "refresh": str(refresh),
+            "access": str(refresh.access_token),
+            "usuario": {
+                "id": str(usuario["_id"]),
+                "nome": usuario["nome"],
+                "matricula": usuario["matricula"],
+                "role": usuario["role"]
+            }
+        }, status=status.HTTP_200_OK)

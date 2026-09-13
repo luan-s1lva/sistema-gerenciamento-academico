@@ -65,3 +65,7 @@ class SubmissionSerializer(serializers.Serializer):
 class QuizSubmissionSerializer(serializers.Serializer):
     discente_id = serializers.CharField()
     respostas_enviadas = serializers.DictField(child=serializers.CharField(max_length=1))
+
+class LocalLoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()

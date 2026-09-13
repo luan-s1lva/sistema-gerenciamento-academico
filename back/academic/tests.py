@@ -1,10 +1,11 @@
 from rest_framework.test import APITestCase
 from rest_framework import status
 from bson import ObjectId
-from .database import quizzes, submissions
+from django.contrib.auth.hashers import make_password
+from .database import quizzes, submissions, users
 
 # Create your tests here.
-class AutomaticSetupTesting(APITestCase):
+class AutomaticSetupTestingQuizz(APITestCase):
     def setUp(self):
         #Cria uma prova mock no bd real
         self.mock = {
@@ -84,3 +85,91 @@ class AutomaticSetupTesting(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data.get("total_acertos"), 1)
         self.assertEqual(response.data.get("nota_obtida"), 50.0)
+
+class AutomaticSetupTestingLocalLogin(APITestCase):
+    def setUp(self):
+        self.mock = {
+                "matricula": "20230045523",
+                "nome": "Teste",
+                "email": "teste@ufrn.br",
+                "password": make_password("senha123"),
+                "auth_provider": "LOCAL",
+                "role": "DOCENTE",
+                "departamento": "DCO",
+                "data_cadastro": "2026-09-01T12:00:00Z"
+        }
+
+        usuario = users.insert_one(self.mock)
+        self.id = str(usuario.inserted_id)
+
+    def tearDown(self):
+        users.delete_one({"_id": ObjectId(self.id)})
+
+    def teste_login_local_com_email_errado(self):
+        url = f"/api/auth/login/"
+        payload = {
+            "email": "luan.teste.765@ufrn.edu.br",
+            "password": "senha123"
+        }
+
+        response = self.client.post(url, payload, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data.get("detail"), "Email não encontrado.")
+
+    def teste_login_local_com_senha_errada(self):
+            url = f"/api/auth/login/"
+            payload = {
+                "email": "teste@ufrn.br",
+                "password": "123"
+            }
+    
+            response = self.client.post(url, payload, format="json")
+
+            self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+            self.assertEqual(response.data.get("detail"), "Senha inválida")
+
+    def teste_login_com_sucesso(self):
+        url = f"/api/auth/login/"
+        payload = {
+            "email": "teste@ufrn.br",
+            "password": "senha123"
+        }
+
+        response = self.client.post(url, payload, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data.get("usuario").get("matricula"), self.mock.get("matricula"))
+
+class AutomaticSetupTestingFederatedLogin(APITestCase):
+
+    def setUp(self):
+        self.mock = {
+                "matricula": "20230045523",
+                "nome": "Teste",
+                "email": "teste.federated@ufrn.br",
+                "password": None,
+                "auth_provider": "FEDERATED",
+                "federated_id": 'sub_retornado_pelo_provedor_oauth',
+                "role": "DOCENTE",
+                "departamento": "DCO",
+                "data_cadastro": "2026-09-01T12:00:00Z"
+        }
+
+        usuario = users.insert_one(self.mock)
+        self.id = str(usuario.inserted_id)
+
+    def tearDown(self):
+        users.delete_one({"_id": ObjectId(self.id)})
+
+    def teste_login_em_conta_federada_passando_senha(self):
+        url = f"/api/auth/login/"
+        payload = {
+            "email": "teste.federated@ufrn.br",
+            "password": "tentativa_de_senha_local"
+        }
+                    
+        response = self.client.post(url, payload, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.data.get("erro"), "Essa conta usa apenas login federado")
