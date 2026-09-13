@@ -79,6 +79,14 @@ export default function Login() {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
+            Entrar com Login Institucional
+          </Button>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+          >
             Entrar
           </Button>
         </Box>

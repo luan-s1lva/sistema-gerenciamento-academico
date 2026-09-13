@@ -4,7 +4,9 @@ import api from "../services/api";
 const AuthContext = createContext();
 
 export default function AuthProvider({ children }) {
-  const [token, setToken] = useState("");
+  const [token, setToken] = useState(
+    () => localStorage.getItem("@token") || "",
+  );
   const [usuario, setUsuario] = useState({});
 
   useEffect(() => {
@@ -16,8 +18,9 @@ export default function AuthProvider({ children }) {
       localStorage.removeItem("@token");
     }
   }, [token]);
+
   const login = async (username, password) => {
-    const response = await api.post("/auth/token/", { username, password });
+    const response = await api.post("/auth/login/", { username, password });
     const { access } = response.data;
     setToken(access);
 
