@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router";
 import CabecalhoQuizz from "../components/CabecalhoQuizz";
 import { buscarProva, submeterProva } from "../services/api";
 import FormularioProva from "../components/FormularioProva";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 
-export default function QuizzAnsweringPage({ quiz_id }) {
+export default function QuizzAnsweringPage() {
+  let params = useParams();
+
   const [provaDados, setProvaDados] = useState(null);
   const [carregando, setCarregando] = useState(true);
   const [pageNumber, setPageNumber] = useState(0);
@@ -14,7 +17,7 @@ export default function QuizzAnsweringPage({ quiz_id }) {
   useEffect(() => {
     async function carregarDados() {
       try {
-        const dados = await buscarProva(quiz_id);
+        const dados = await buscarProva(params.quiz_id);
         setProvaDados(dados);
       } catch (e) {
         console.log("Erro:" + e);
