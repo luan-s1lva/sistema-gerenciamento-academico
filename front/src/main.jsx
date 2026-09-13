@@ -7,6 +7,7 @@ import "./index.css";
 import AuthProvider from "./contexts/AuthContext.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
+import CreateQuizz from "./pages/CreateQuizz.jsx";
 
 createRoot(document.getElementById("root")).render(
   <AuthProvider>
@@ -17,6 +18,7 @@ createRoot(document.getElementById("root")).render(
 
         <Route path="/" element={<Home />}>
           <Route path="provas/" element={<AvailableQuizzes />} />
+          <Route path="prova/cadastrar/" element={<CreateQuizz />} />
           <Route path="prova/:quiz_id/" element={<QuizzAnsweringPage />} />
         </Route>
       </Routes>

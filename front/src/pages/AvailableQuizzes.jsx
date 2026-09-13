@@ -1,7 +1,9 @@
+import AvailableQuizzList from "../components/AvailableQuizzList";
+
 export default function AvailableQuizzes() {
   return (
     <>
-      <h2>Tela de mostrar os quizzes disponíveis</h2>
+      <AvailableQuizzList class_id={"6a9700493c9e42efab2db380"} />
     </>
   );
 }

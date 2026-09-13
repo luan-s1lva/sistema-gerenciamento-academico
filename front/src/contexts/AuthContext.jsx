@@ -19,8 +19,8 @@ export default function AuthProvider({ children }) {
     }
   }, [token]);
 
-  const login = async (username, password) => {
-    const response = await api.post("/auth/login/", { username, password });
+  const login = async (email, password) => {
+    const response = await api.post("/auth/login/", { email, password });
     const { access } = response.data;
     setToken(access);
 
