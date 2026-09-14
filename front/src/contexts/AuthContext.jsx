@@ -8,6 +8,7 @@ export default function AuthProvider({ children }) {
     () => localStorage.getItem("@token") || "",
   );
   const [usuario, setUsuario] = useState({});
+  const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
     if (token) {
@@ -17,12 +18,20 @@ export default function AuthProvider({ children }) {
       delete api.defaults.headers.common["Authorization"];
       localStorage.removeItem("@token");
     }
+
+    setCarregando(false);
   }, [token]);
 
   const login = async (email, password) => {
     const response = await api.post("/auth/login/", { email, password });
     const { access } = response.data;
     setToken(access);
+    setUsuario({
+      id: response.data.usuario.id,
+      nome: response.data.usuario.nome,
+      role: response.data.usuario.role,
+      matricula: response.data.usuario.matricula,
+    });
 
     return access;
   };
@@ -34,7 +43,14 @@ export default function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ token, usuario, login, logout, estaAutenticado: !!token }}
+      value={{
+        token,
+        usuario,
+        login,
+        logout,
+        estaAutenticado: !!token,
+        carregando,
+      }}
     >
       {children}
     </AuthContext.Provider>

@@ -3,12 +3,12 @@ import Stack from "@mui/material/Stack";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
 import { useNavigate } from "react-router-dom";
-
+import { useAuth } from "../contexts/AuthContext";
 
 export default function Navbar() {
-    let navigate = useNavigate();
+  let navigate = useNavigate();
+  const { logout, usuario } = useAuth();
 
   return (
     <AppBar
@@ -80,6 +80,7 @@ export default function Navbar() {
                 backgroundColor: "action.hover",
               },
             }}
+            onClick={() => logout()}
           >
             Deslogar
           </Button>

@@ -17,7 +17,6 @@ export default function AvailableQuizzList({ class_id }) {
     try {
       const dados = await buscarProvas(class_id);
       setQuizzesDisponiveis(dados);
-      console.log(dados);
     } catch (e) {
       console.log("Erro: " + e);
     }

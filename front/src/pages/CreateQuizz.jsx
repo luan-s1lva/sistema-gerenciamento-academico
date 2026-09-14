@@ -1,7 +1,7 @@
 export default function CreateQuizz() {
-    return(
-        <>
-        <h1>Criar quizz</h1>
-        </>
-    )
+  return (
+    <>
+      <h1>Criar quizz</h1>
+    </>
+  );
 }
