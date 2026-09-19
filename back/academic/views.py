@@ -7,13 +7,16 @@ from bson.errors import InvalidId
 from datetime import datetime
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.hashers import check_password
-from .serializers import QuizzSerializer, QuizSubmissionSerializer, LocalLoginSerializer
-from .database import quizzes, submissions, users
-
+from .serializers import QuizzSerializer, QuizSubmissionSerializer, LocalLoginSerializer, ClassSerializer
+from .database import quizzes, submissions, users, classes
+from rest_framework.permissions import AllowAny
 # Create your views here.
 
 #Caso de uso: Cadastrar avaliação
 class QuizCreateView(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
+    
     def post(self, request):
         serializer = QuizzSerializer(data=request.data)
         if not serializer.is_valid():
@@ -165,6 +168,8 @@ class SubmitQuizView(APIView):
         }, status=status.HTTP_201_CREATED)
 
 class LoginLocalMongoView(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
     def post(self, request):
         serializer = LocalLoginSerializer(data = request.data)
 
@@ -213,3 +218,28 @@ class LoginLocalMongoView(APIView):
                 "role": usuario["role"]
             }
         }, status=status.HTTP_200_OK)
+
+#Caso de uso: buscar todas as turmas
+class GetAllClasses(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        try:
+            turmas = classes.find()
+            lista_turmas = list(turmas)
+        except Exception as e:
+            print(f"[ERRO BANCO ATLAS]: {e}")
+            return Response({"erro": "Falha na comunicação com o banco de dados.", "detalhes": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        if not lista_turmas:
+            return Response({"erro": "Nenhuma turma disponível"}, status = status.HTTP_404_NOT_FOUND)
+
+        resposta = []
+        for item in lista_turmas:
+            resposta.append({
+                "id": str(item["_id"]),
+                "nome": item.get("nome_turma")
+            })
+
+        return Response(resposta, status=status.HTTP_200_OK)
