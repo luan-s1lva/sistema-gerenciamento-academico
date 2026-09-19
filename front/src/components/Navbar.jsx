@@ -34,7 +34,7 @@ export default function Navbar() {
         </Typography>
 
         <Stack direction="row" spacing={1}>
-          <Button
+          {/* <Button
             variant="text"
             sx={{
               color: "text.primary",
@@ -49,7 +49,7 @@ export default function Navbar() {
             onClick={() => navigate("/provas/")}
           >
             Provas disponíveis
-          </Button>
+          </Button> */}
 
           <Button
             variant="text"
