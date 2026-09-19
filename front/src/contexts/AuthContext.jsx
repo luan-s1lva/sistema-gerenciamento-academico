@@ -7,7 +7,16 @@ export default function AuthProvider({ children }) {
   const [token, setToken] = useState(
     () => localStorage.getItem("@token") || "",
   );
-  const [usuario, setUsuario] = useState({});
+  
+  const [usuario, setUsuario] = useState(() => {
+    const salvo = localStorage.getItem("@usuario");
+    try {
+      return salvo ? JSON.parse(salvo) : null;
+    } catch {
+      return null;
+    }
+  });
+
   const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
@@ -17,6 +26,7 @@ export default function AuthProvider({ children }) {
     } else {
       delete api.defaults.headers.common["Authorization"];
       localStorage.removeItem("@token");
+      localStorage.removeItem("@usuario");
     }
 
     setCarregando(false);
@@ -24,21 +34,28 @@ export default function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     const response = await api.post("/auth/login/", { email, password });
-    const { access } = response.data;
+    const { access, usuario: dadosUsuario } = response.data;
+
+    const userFormatado = {
+      id: dadosUsuario.id,
+      nome: dadosUsuario.nome,
+      role: dadosUsuario.role,
+      matricula: dadosUsuario.matricula,
+    };
+
     setToken(access);
-    setUsuario({
-      id: response.data.usuario.id,
-      nome: response.data.usuario.nome,
-      role: response.data.usuario.role,
-      matricula: response.data.usuario.matricula,
-    });
+    setUsuario(userFormatado);
+    localStorage.setItem("@usuario", JSON.stringify(userFormatado));
 
     return access;
   };
 
   const logout = () => {
-    setToken(null);
+    setToken("");
     setUsuario(null);
+    localStorage.removeItem("@token");
+    localStorage.removeItem("@usuario");
+    delete api.defaults.headers.common["Authorization"];
   };
 
   return (

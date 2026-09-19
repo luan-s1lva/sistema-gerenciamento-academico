@@ -14,17 +14,42 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import Paper from "@mui/material/Paper";
-import { useState } from "react";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+
+import { useEffect, useState } from "react";
+import { buscarTurmas, cadastrarProva } from "../services/api";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function CreateQuizz() {
   const [numeroQuestoes, setNumeroQuestoes] = useState(1);
   const [numeroAlternativas, setNumeroAlternativas] = useState(2);
   const [questaoAtual, setQuestaoAtual] = useState(1);
   const [questoes, setQuestoes] = useState({});
+  const [turma, setTurma] = useState([]);
+
+  const { usuario } = useAuth();
+
+  useEffect(() => {
+    async function carregarTurmas() {
+      try {
+        const dados = await buscarTurmas();
+        setTurma(Array.isArray(dados) ? dados : []);
+      } catch (e) {
+        console.log("Erro " + e);
+      }
+    }
+
+    carregarTurmas();
+  }, []);
 
   const [provaInfo, setProvaInfo] = useState({
     class_id: "",
-    docente_id: "",
     titulo: "",
     descricao: "",
     prazo_inicio: "",
@@ -68,13 +93,23 @@ export default function CreateQuizz() {
         valor_questao: q.valor_questao || 0,
       });
     }
-
+    
     const payload = {
       ...provaInfo,
+      docente_id: usuario?.id || usuario?.matricula || "",
       questoes: listaQuestoes,
     };
 
-    console.log("Payload pronto para o MongoDB:", payload);
+    async function entregarProva() {
+      try {
+        const response = await cadastrarProva(payload)
+        console.log(response)
+      } catch (e) {
+        console.log("Erro " + e);
+      }
+    }
+
+    entregarProva();
   };
 
   const handleSetNumeroAlternativas = (v) => {
@@ -121,12 +156,108 @@ export default function CreateQuizz() {
 
         <Stack spacing={3} sx={{ mt: 2 }}>
           <Box>
+            <Typography variant="subtitle2" gutterBottom>
+              Título da prova
+            </Typography>
+            <TextField
+              fullWidth
+              size="small"
+              variant="outlined"
+              value={provaInfo.titulo}
+              onChange={(e) =>
+                setProvaInfo((anteriores) => ({
+                  ...anteriores,
+                  titulo: e.target.value,
+                }))
+              }
+            />
+          </Box>
+
+          <Box>
+            <Typography variant="subtitle2" gutterBottom>
+              Descrição da prova
+            </Typography>
+            <TextField
+              fullWidth
+              size="small"
+              variant="outlined"
+              value={provaInfo.descricao}
+              onChange={(e) =>
+                setProvaInfo((anteriores) => ({
+                  ...anteriores,
+                  descricao: e.target.value,
+                }))
+              }
+            />
+          </Box>
+
+          <Box>
+            <Typography variant="subtitle2" gutterBottom>
+              Selecionar turma de aplicação da prova
+            </Typography>
+            <Select
+              fullWidth
+              size="small"
+              displayEmpty
+              value={provaInfo.class_id}
+              onChange={(e) =>
+                setProvaInfo((prev) => ({ ...prev, class_id: e.target.value }))
+              }
+            >
+              <MenuItem value="" disabled>
+                <em>Selecione uma turma</em>
+              </MenuItem>
+              {turma.map((item) => (
+                <MenuItem key={item.id} value={item.id}>
+                  {item.nome}
+                </MenuItem>
+              ))}
+            </Select>
+          </Box>
+
+          <Box>
+            <Typography variant="subtitle2" gutterBottom>
+              Selecionar data de início da prova
+            </Typography>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DemoContainer components={["DatePicker"]}>
+                <DatePicker
+                  label="Início da Avaliação"
+                  onChange={(value) =>
+                    setProvaInfo((anteriores) => ({
+                      ...anteriores,
+                      prazo_inicio: value ? value.toISOString() : "",
+                    }))
+                  }
+                />
+              </DemoContainer>
+            </LocalizationProvider>
+
+            <Typography variant="subtitle2" sx={{ mt: 2 }} gutterBottom>
+              Selecionar data de término da prova
+            </Typography>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DemoContainer components={["DatePicker"]}>
+                <DatePicker
+                  label="Término da Avaliação"
+                  onChange={(value) =>
+                    setProvaInfo((anteriores) => ({
+                      ...anteriores,
+                      prazo_limite: value ? value.toISOString() : "",
+                    }))
+                  }
+                />
+              </DemoContainer>
+            </LocalizationProvider>
+          </Box>
+
+          <Box>
             <Typography variant="body2" color="text.secondary" gutterBottom>
               Número de Questões: <strong>{numeroQuestoes}</strong>
             </Typography>
             <Slider
               aria-label="Número Questões"
-              defaultValue={1}
+              value={numeroQuestoes}
               valueLabelDisplay="auto"
               step={1}
               marks
@@ -143,7 +274,7 @@ export default function CreateQuizz() {
             </Typography>
             <Slider
               aria-label="Número Alternativas"
-              defaultValue={2}
+              value={numeroAlternativas}
               valueLabelDisplay="auto"
               step={2}
               marks
@@ -211,8 +342,7 @@ export default function CreateQuizz() {
                 color="text.secondary"
                 sx={{ mb: 1 }}
               >
-                Alternativas (Marque o botão de opção correspondente ao gabarito
-                correto):
+                Alternativas (Marque a opção correspondente ao gabarito correto):
               </Typography>
 
               <RadioGroup
@@ -223,7 +353,7 @@ export default function CreateQuizz() {
                 <Stack spacing={2} sx={{ mt: 1 }}>
                   {Array.from({ length: numeroAlternativas }).map((_, i) => (
                     <Paper
-                      key={i}
+                      key={LETRAS[i]}
                       variant="outlined"
                       sx={{
                         p: 1.5,
@@ -270,7 +400,6 @@ export default function CreateQuizz() {
           variant="contained"
           size="large"
           fullWidth
-          onClick={handleSubmit}
           sx={{
             py: 1.5,
             fontWeight: "bold",

@@ -10,6 +10,12 @@ export const buscarProva = async (quiz_id) => {
   return response.data;
 };
 
+export const cadastrarProva = async (payload) => {
+  const response = await api.post(`/prova/criar/`, payload);
+
+  return response.data;
+};
+
 export const buscarProvas = async (class_id) => {
   const response = await api.get(`/provas/${class_id}/`);
 
@@ -23,6 +29,14 @@ export const submeterProva = async (quiz_id, discente_id, respostas) => {
   };
 
   const response = await api.post(`/prova/submeter/${quiz_id}/`, payload);
+
+  return response.data;
+};
+
+export const buscarTurmas = async () => {
+  const response = await api.get(`/turmas/`);
+
+  return response.data;
 };
 
 api.interceptors.response.use(
