@@ -65,7 +65,7 @@ export default function CreateQuizz() {
     enunciado: "",
     alternativas: {},
     gabarito: "",
-    valor_questao: 10.0,
+    valor_questao: 0.0,
   };
 
   const handleSubmit = (e) => {
@@ -92,7 +92,7 @@ export default function CreateQuizz() {
         enunciado: q.enunciado || "",
         alternativas: alternativasFiltradas,
         gabarito: q.gabarito || "",
-        valor_questao: q.valor_questao || 0,
+        valor_questao: (provaInfo.peso_total / numeroQuestoes) || 0,
       });
     }
     

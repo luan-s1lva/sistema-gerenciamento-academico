@@ -4,13 +4,13 @@ export default function CabecalhoQuizz({
   titulo,
   descricao,
   prazo_inicio,
-  prazo_limite,
+  prazo_fim,
 }) {
   const [tempoTexto, setTempoTexto] = useState("");
 
   useEffect(() => {
     function tempoRestante() {
-      const limite = new Date(prazo_limite).getTime();
+      const limite = new Date(prazo_fim).getTime();
       const agora = Date.now();
       const diferenca = limite - agora;
 
