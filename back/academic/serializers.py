@@ -8,7 +8,7 @@ class QuestionSerializer(serializers.Serializer):
     valor_questao = serializers.FloatField()
 
 class QuizzSerializer(serializers.Serializer):
-    id = serializers.CharField()
+    id = serializers.CharField(required=False, read_only=True)
     turma_id = serializers.CharField()
     docente_id = serializers.CharField()
     titulo = serializers.CharField()
