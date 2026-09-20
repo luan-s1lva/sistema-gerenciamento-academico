@@ -30,6 +30,8 @@ class QuizCreateView(APIView):
 
 #Caso de uso: Visualizar avaliação(Discente)
 class VisualizeTestView(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
     def get(self, request, quiz_id):
         try:
             obj_id = ObjectId(quiz_id.strip())
@@ -60,12 +62,14 @@ class VisualizeTestView(APIView):
             "titulo": prova["titulo"],
             "descricao": prova["descricao"],
             "prazo_inicio": prova["prazo_inicio"],
-            "prazo_limite": prova["prazo_limite"],
+            "prazo_fim": prova["prazo_fim"],
             "questoes": questoes_aluno
         }, status = status.HTTP_200_OK)
 
 #Caso de uso : Buscar todas as provas para uma dada turma
 class VisualizesQuizzesFromClass(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
     def get(self, request, class_id):
         try:
             provas = quizzes.find({"class_id": class_id})
@@ -86,7 +90,7 @@ class VisualizesQuizzesFromClass(APIView):
                 "titulo": prova.get("titulo"),
                 "descricao": prova.get("descricao"),
                 "prazo_inicio": prova.get("prazo_inicio"),
-                "prazo_limite": prova.get("prazo_limite"),
+                "prazo_fim": prova.get("prazo_fim"),
                 "total_questoes": len(prova.get("questoes"))
             })
 
@@ -94,6 +98,8 @@ class VisualizesQuizzesFromClass(APIView):
 
 #Caso de uso: Entregar prova
 class SubmitQuizView(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
     def post(self, request, quiz_id):
         serializer = QuizSubmissionSerializer(data=request.data)
         prova = None
