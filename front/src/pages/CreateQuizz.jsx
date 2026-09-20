@@ -49,11 +49,13 @@ export default function CreateQuizz() {
   }, []);
 
   const [provaInfo, setProvaInfo] = useState({
-    class_id: "",
+    turma_id: "",
     titulo: "",
     descricao: "",
     prazo_inicio: "",
-    prazo_limite: "",
+    prazo_fim: "",
+    peso_total: 0,
+    criado_em: new Date().toISOString()
   });
 
   const LETRAS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
@@ -175,6 +177,24 @@ export default function CreateQuizz() {
 
           <Box>
             <Typography variant="subtitle2" gutterBottom>
+              Peso total da prova
+            </Typography>
+            <TextField
+              fullWidth
+              size="small"
+              variant="outlined"
+              value={provaInfo.peso_total}
+              onChange={(e) =>
+                setProvaInfo((anteriores) => ({
+                  ...anteriores,
+                  peso_total: parseInt(e.target.value, 10) || 0,
+                }))
+              }
+            />
+          </Box>
+          
+          <Box>
+            <Typography variant="subtitle2" gutterBottom>
               Descrição da prova
             </Typography>
             <TextField
@@ -199,9 +219,9 @@ export default function CreateQuizz() {
               fullWidth
               size="small"
               displayEmpty
-              value={provaInfo.class_id}
+              value={provaInfo.turma_id}
               onChange={(e) =>
-                setProvaInfo((prev) => ({ ...prev, class_id: e.target.value }))
+                setProvaInfo((prev) => ({ ...prev, turma_id: e.target.value }))
               }
             >
               <MenuItem value="" disabled>
@@ -243,7 +263,7 @@ export default function CreateQuizz() {
                   onChange={(value) =>
                     setProvaInfo((anteriores) => ({
                       ...anteriores,
-                      prazo_limite: value ? value.toISOString() : "",
+                      prazo_fim: value ? value.toISOString() : "",
                     }))
                   }
                 />
