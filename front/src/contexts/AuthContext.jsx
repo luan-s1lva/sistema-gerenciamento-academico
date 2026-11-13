@@ -5,9 +5,9 @@ const AuthContext = createContext();
 
 export default function AuthProvider({ children }) {
   const [token, setToken] = useState(
-    () => localStorage.getItem("@token") || "",
+    () => localStorage.getItem("@token") || ""
   );
-  
+
   const [usuario, setUsuario] = useState(() => {
     const salvo = localStorage.getItem("@usuario");
     try {
@@ -21,18 +21,16 @@ export default function AuthProvider({ children }) {
 
   useEffect(() => {
     if (token) {
-      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       localStorage.setItem("@token", token);
     } else {
-      delete api.defaults.headers.common["Authorization"];
       localStorage.removeItem("@token");
       localStorage.removeItem("@usuario");
     }
-
     setCarregando(false);
   }, [token]);
 
   const login = async (email, password) => {
+    // Chamada enviada para /api/auth/login/
     const response = await api.post("/auth/login/", { email, password });
     const { access, usuario: dadosUsuario } = response.data;
 
@@ -45,6 +43,8 @@ export default function AuthProvider({ children }) {
 
     setToken(access);
     setUsuario(userFormatado);
+
+    localStorage.setItem("@token", access);
     localStorage.setItem("@usuario", JSON.stringify(userFormatado));
 
     return access;
@@ -55,7 +55,6 @@ export default function AuthProvider({ children }) {
     setUsuario(null);
     localStorage.removeItem("@token");
     localStorage.removeItem("@usuario");
-    delete api.defaults.headers.common["Authorization"];
   };
 
   return (
