@@ -157,4 +157,8 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION": False,
 }
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    "https://luan-sistema-gerenciamento-academico.netlify.app",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
