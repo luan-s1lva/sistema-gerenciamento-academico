@@ -28,7 +28,7 @@ class QuizCreateView(APIView):
             "Quiz ID": str(resultado.inserted_id)
         }, status=status.HTTP_201_CREATED)
 
-#Caso de uso: Visualizar avaliação(Discente)
+#Caso de uso: Visualizar avaliação(Docente)
 class VisualizeTestView(APIView):
     authentication_classes = []
     permission_classes = [AllowAny]
@@ -53,6 +53,7 @@ class VisualizeTestView(APIView):
                 "id": p["id"],
                 "enunciado": p["enunciado"],
                 "alternativas": p["alternativas"],
+                "gabarito": p.get("gabarito"),
                 "valor_questao": p["valor_questao"]
             })
 
@@ -86,6 +87,36 @@ class VisualizesQuizzesFromClass(APIView):
             resposta.append({
                 "id": str(prova["_id"]),
                 "class_id": str(prova.get("class_id")),
+                "docente_id": str(prova.get("docente_id")),
+                "titulo": prova.get("titulo"),
+                "descricao": prova.get("descricao"),
+                "prazo_inicio": prova.get("prazo_inicio"),
+                "prazo_fim": prova.get("prazo_fim"),
+                "total_questoes": len(prova.get("questoes"))
+            })
+
+        return Response(resposta, status = status.HTTP_200_OK)
+
+#Caso de uso: Retornar todas as provas
+class VisualizeAllQuizzes(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
+    def get(self, request):
+        try:
+            provas = quizzes.find()
+            lista_provas = list(provas)
+        except Exception as e:
+            print(f"[ERRO BANCO ATLAS]: {e}")
+            return Response({"erro": "Falha na comunicação com o banco de dados.", "detalhes": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        if not lista_provas:
+            return Response({"erro": "Nenhuma prova disponível"}, status = status.HTTP_404_NOT_FOUND)
+
+        resposta = []
+        for prova in lista_provas:
+            resposta.append({
+                "id": str(prova["_id"]),
+                "class_id": str(prova.get("turma_id")),
                 "docente_id": str(prova.get("docente_id")),
                 "titulo": prova.get("titulo"),
                 "descricao": prova.get("descricao"),
