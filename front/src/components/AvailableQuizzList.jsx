@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { buscarProvas } from "../services/api";
+import { buscarTodasProvas } from "../services/api";
+import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -9,18 +10,29 @@ import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
 import Chip from "@mui/material/Chip";
+import { useAuth } from "../contexts/AuthContext";
 
-export default function AvailableQuizzList({ class_id }) {
+export default function AvailableQuizzList() {
+  let navigate = useNavigate();
+  const { usuario } = useAuth()
   const [quizzesDisponiveis, setQuizzesDisponiveis] = useState({});
 
   const fetchQuizzes = async () => {
     try {
-      const dados = await buscarProvas(class_id);
+      const dados = await buscarTodasProvas();
       setQuizzesDisponiveis(dados);
     } catch (e) {
       console.log("Erro: " + e);
     }
   };
+
+  const handleRole = (id) => {
+    if (usuario.role.toLowerCase() == "docente" || usuario.role.toLowerCase() == "gestor" || usuario.role.toLowerCase() == "admin") {
+      navigate(`/prova/visualizar/${id}/`)
+    } else {
+      navigate(`/prova/${id}/`)
+    }
+  }
 
   useEffect(() => {
     fetchQuizzes();
@@ -83,16 +95,18 @@ export default function AvailableQuizzList({ class_id }) {
                 <strong>Prazo início:</strong> {texto.prazo_inicio}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                <strong>Prazo fim:</strong> {texto.prazo_limite}
+                <strong>Prazo fim:</strong> {texto.prazo_fim}
               </Typography>
             </Stack>
           </CardContent>
 
           <CardActions sx={{ px: 2, pb: 2 }}>
             <Button
+              id="roleAction"
               variant="contained"
               fullWidth
               sx={{ textTransform: "none" }}
+              onClick={() => handleRole(texto.id)}
             >
               Acessar Prova
             </Button>

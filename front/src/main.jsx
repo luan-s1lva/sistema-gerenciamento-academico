@@ -9,6 +9,7 @@ import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import CreateQuizz from "./pages/CreateQuizz.jsx";
 import PrivateRoute from "./middlewares/PrivateRoute.jsx";
+import TeacherQuizDetails from "./components/TeacherQuizDetails.jsx";
 
 createRoot(document.getElementById("root")).render(
   <AuthProvider>
@@ -20,8 +21,9 @@ createRoot(document.getElementById("root")).render(
         <Route element={<PrivateRoute />}>
           <Route path="/" element={<Home />}>
             <Route path="provas/" element={<AvailableQuizzes />} />
-            <Route path="prova/cadastrar/" element={<CreateQuizz />} />
             <Route path="prova/:quiz_id/" element={<QuizzAnsweringPage />} />
+            <Route path="prova/cadastrar/" element={<CreateQuizz />} />
+            <Route path="prova/visualizar/:quiz_id/" element={<TeacherQuizDetails />} />
           </Route>
         </Route>
       </Routes>

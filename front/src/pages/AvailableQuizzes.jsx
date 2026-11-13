@@ -5,7 +5,7 @@ export default function AvailableQuizzes() {
   const { usuario } = useAuth()
   return (
     <>
-      <AvailableQuizzList class_id={"6a9700493c9e42efab2db380"} />
+      <AvailableQuizzList />
     </>
   );
 }

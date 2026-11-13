@@ -34,7 +34,9 @@ export default function Navbar() {
         </Typography>
 
         <Stack direction="row" spacing={1}>
-          {/* <Button
+          {usuario?.role?.toLowerCase() != "discente" && (
+          <>
+          <Button
             variant="text"
             sx={{
               color: "text.primary",
@@ -49,7 +51,7 @@ export default function Navbar() {
             onClick={() => navigate("/provas/")}
           >
             Provas disponíveis
-          </Button> */}
+          </Button>
 
           <Button
             variant="text"
@@ -67,7 +69,26 @@ export default function Navbar() {
           >
             Cadastrar Prova
           </Button>
+          </>
+          )}
 
+          <Button
+            variant="text"
+            sx={{
+              color: "text.primary",
+              fontWeight: 500,
+              textTransform: "none",
+              borderRadius: 2,
+              px: 2,
+              "&:hover": {
+                backgroundColor: "action.hover",
+              },
+            }}
+            onClick={() => navigate("/provas/")}
+          >
+            Provas disponíveis
+          </Button>
+          
           <Button
             variant="text"
             sx={{
