@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://127.0.0.1:8000/api",
+  baseURL: "https://sistema-gerenciamento-academico.onrender.com",
 });
 
 export const buscarProva = async (quiz_id) => {
