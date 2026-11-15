@@ -39,7 +39,7 @@ export default function Login() {
         }}
       >
         <Typography component="h1" variant="h5">
-          Acesso ao Sistema de Avaliações
+          Acesso ao Sistema de Gerenciamento Acadêmico
         </Typography>
 
         {erro && (
@@ -73,14 +73,14 @@ export default function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <Button
+          {/* <Button
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
             Entrar com Login Institucional
-          </Button>
+          </Button> */}
           <Button
             type="submit"
             fullWidth

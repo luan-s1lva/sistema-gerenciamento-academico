@@ -5,7 +5,7 @@ const AuthContext = createContext();
 
 export default function AuthProvider({ children }) {
   const [token, setToken] = useState(
-    () => localStorage.getItem("@token") || ""
+    () => localStorage.getItem("@token") || "",
   );
 
   const [usuario, setUsuario] = useState(() => {

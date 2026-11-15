@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import CabecalhoQuizz from "../components/CabecalhoQuizz";
 import { buscarProva, submeterProva } from "../services/api";
 import FormularioProva from "../components/FormularioProva";
@@ -13,12 +13,23 @@ import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
 import Paper from "@mui/material/Paper";
 import Divider from "@mui/material/Divider";
+import { useAuth } from "../contexts/AuthContext";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContentText from "@mui/material/DialogContentText";
 
 export default function QuizzAnsweringPage() {
   let params = useParams();
+  let navigate = useNavigate()
 
+  const { usuario } = useAuth()
+  
   const [provaDados, setProvaDados] = useState(null);
   const [carregando, setCarregando] = useState(true);
+  const [terminado, setTerminado] = useState(false);
+  const [resultados, setResultados] = useState({});
   const [pageNumber, setPageNumber] = useState(0);
   const [respostas, setRespostas] = useState({});
 
@@ -70,15 +81,44 @@ export default function QuizzAnsweringPage() {
 
   const handleSubmit = async () => {
     try {
-      const res = await submeterProva(params.quiz_id, "2354234", respostas);
-      console.log(res);
+      const res = await submeterProva(params.quiz_id, usuario.id, respostas);
+      setTerminado(true)
+      setResultados(res)
     } catch (err) {
       console.error("Erro na submissão:", err);
     }
   };
 
   return (
+
+    
     <Box sx={{ maxWidth: 860, mx: "auto", p: { xs: 2, sm: 3, md: 4 } }}>
+      <Dialog
+        open={terminado}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        role="alertdialog"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {resultados.mensagem}!
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Nota Obtida: {resultados.nota_obtida}
+          </DialogContentText>
+          <DialogContentText id="alert-dialog-description">
+            Total de Questões: {resultados.total_questoes}
+          </DialogContentText>
+          <DialogContentText id="alert-dialog-description">
+            Total de Acertos: {resultados.total_acertos}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => navigate("/provas/")} autoFocus>
+            Concluir
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Stack spacing={3}>
         {/* Cabeçalho do Quiz com moldura e sombra suave */}
         <Paper elevation={2} sx={{ p: 3, borderRadius: 2 }}>
@@ -125,7 +165,10 @@ export default function QuizzAnsweringPage() {
             gap: 2,
           }}
         >
-          <Stack spacing={2} sx={{ width: { xs: "100%", sm: "auto" }, alignItems: "center" }}>
+          <Stack
+            spacing={2}
+            sx={{ width: { xs: "100%", sm: "auto" }, alignItems: "center" }}
+          >
             <Pagination
               count={provaDados.questoes.length || 1}
               page={pageNumber + 1}
@@ -152,7 +195,7 @@ export default function QuizzAnsweringPage() {
               width: { xs: "100%", sm: "auto" },
             }}
           >
-            TESTAR
+            TERMINAR PROVA
           </Button>
         </Paper>
       </Stack>

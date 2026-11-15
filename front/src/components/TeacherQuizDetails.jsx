@@ -28,7 +28,8 @@ export default function TeacherQuizDetails() {
         setProva(dados);
       } catch (e) {
         setErro(
-          e.response?.data?.erro || "Não foi possível carregar os detalhes da prova."
+          e.response?.data?.erro ||
+            "Não foi possível carregar os detalhes da prova.",
         );
       } finally {
         setLoading(false);
@@ -66,7 +67,7 @@ export default function TeacherQuizDetails() {
   const questoes = prova.questoes || [];
   const pontuacaoTotal = questoes.reduce(
     (acc, q) => acc + Number(q.valor_questao || 0),
-    0
+    0,
   );
 
   const renderAlternativas = (alternativas, gabarito) => {
@@ -79,7 +80,7 @@ export default function TeacherQuizDetails() {
                 alt.letra || String.fromCharCode(65 + idx),
                 alt.texto || JSON.stringify(alt),
               ]
-            : [String.fromCharCode(65 + idx), String(alt)]
+            : [String.fromCharCode(65 + idx), String(alt)],
         )
       : Object.entries(alternativas);
 
@@ -141,11 +142,7 @@ export default function TeacherQuizDetails() {
         }}
       >
         <CardContent>
-          <Stack
-            direction="row"
-            spacing={1}
-            sx={{ mb: 1.5 }}
-          >
+          <Stack direction="row" spacing={1} sx={{ mb: 1.5 }}>
             <Chip
               label={`${questoes.length} questões`}
               size="small"
@@ -169,7 +166,12 @@ export default function TeacherQuizDetails() {
             )}
           </Stack>
 
-          <Typography variant="h5" component="h1" fontWeight="bold" gutterBottom>
+          <Typography
+            variant="h5"
+            component="h1"
+            fontWeight="bold"
+            gutterBottom
+          >
             {prova.titulo}
           </Typography>
 
@@ -214,10 +216,7 @@ export default function TeacherQuizDetails() {
             }}
           >
             <CardContent>
-              <Stack
-                direction="row"
-                sx={{ mb: 1 }}
-              >
+              <Stack direction="row" sx={{ mb: 1 }}>
                 <Typography variant="subtitle2" color="text.secondary">
                   Questão {index + 1}
                 </Typography>

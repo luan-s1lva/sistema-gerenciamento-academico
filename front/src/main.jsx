@@ -1,5 +1,12 @@
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, Navigate, Outlet, Route, Routes, useNavigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Navigate,
+  Outlet,
+  Route,
+  Routes,
+  useNavigate,
+} from "react-router-dom";
 import Home from "./pages/Home.jsx";
 import AvailableQuizzes from "./pages/AvailableQuizzes.jsx";
 import QuizzAnsweringPage from "./pages/QuizzAnsweringPage.jsx";
@@ -30,12 +37,15 @@ createRoot(document.getElementById("root")).render(
             <Route path="provas/" element={<AvailableQuizzes />} />
             <Route path="prova/:quiz_id/" element={<QuizzAnsweringPage />} />
             <Route path="prova/cadastrar/" element={<CreateQuizz />} />
-            <Route path="prova/visualizar/:quiz_id/" element={<TeacherQuizDetails />} />
+            <Route
+              path="prova/visualizar/:quiz_id/"
+              element={<TeacherQuizDetails />}
+            />
           </Route>
         </Route>
 
         {/* Qualquer rota desconhecida redireciona para "/" (que passa pelo PrivateRoute) */}
-        <Route path="*" element={<Navigate   to="/" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   </AuthProvider>,

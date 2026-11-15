@@ -55,7 +55,7 @@ export default function CreateQuizz() {
     prazo_inicio: "",
     prazo_fim: "",
     peso_total: 0,
-    criado_em: new Date().toISOString()
+    criado_em: new Date().toISOString(),
   });
 
   const LETRAS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
@@ -92,10 +92,10 @@ export default function CreateQuizz() {
         enunciado: q.enunciado || "",
         alternativas: alternativasFiltradas,
         gabarito: q.gabarito || "",
-        valor_questao: (provaInfo.peso_total / numeroQuestoes) || 0,
+        valor_questao: provaInfo.peso_total / numeroQuestoes || 0,
       });
     }
-    
+
     const payload = {
       ...provaInfo,
       docente_id: usuario?.id || usuario?.matricula || "",
@@ -104,8 +104,8 @@ export default function CreateQuizz() {
 
     async function entregarProva() {
       try {
-        const response = await cadastrarProva(payload)
-        console.log(response)
+        const response = await cadastrarProva(payload);
+        console.log(response);
       } catch (e) {
         console.log("Erro " + e);
       }
@@ -192,7 +192,7 @@ export default function CreateQuizz() {
               }
             />
           </Box>
-          
+
           <Box>
             <Typography variant="subtitle2" gutterBottom>
               Descrição da prova
@@ -362,7 +362,8 @@ export default function CreateQuizz() {
                 color="text.secondary"
                 sx={{ mb: 1 }}
               >
-                Alternativas (Marque a opção correspondente ao gabarito correto):
+                Alternativas (Marque a opção correspondente ao gabarito
+                correto):
               </Typography>
 
               <RadioGroup

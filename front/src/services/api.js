@@ -2,7 +2,7 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: "https://sistema-gerenciamento-academico.onrender.com/api",
-  // baseURL: "http://127.0.0.1:8000/api"
+  // baseURL: "http://127.0.0.1:8000/api",
 });
 
 // Envia o token salvo em toda requisição
@@ -24,11 +24,21 @@ api.interceptors.response.use(
       window.location.href = "/login";
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export const buscarProva = async (quiz_id) => {
   const response = await api.get(`/prova/visualizar/${quiz_id}/`);
+  return response.data;
+};
+
+export const buscarDocente = async (docente_id) => {
+  const response = await api.get(`/buscar/docente/${docente_id}/`);
+  return response.data;
+};
+
+export const buscarTurma = async (turma_id) => {
+  const response = await api.get(`/buscar/turma/${turma_id}/`);
   return response.data;
 };
 

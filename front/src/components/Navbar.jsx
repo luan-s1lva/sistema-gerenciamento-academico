@@ -35,64 +35,64 @@ export default function Navbar() {
 
         <Stack direction="row" spacing={1}>
           {usuario?.role?.toLowerCase() != "discente" && (
-          <>
-          <Button
-            variant="text"
-            sx={{
-              color: "text.primary",
-              fontWeight: 500,
-              textTransform: "none",
-              borderRadius: 2,
-              px: 2,
-              "&:hover": {
-                backgroundColor: "action.hover",
-              },
-            }}
-            onClick={() => navigate("/provas/")}
-          >
-            Provas disponíveis
-          </Button>
+            <>
+              <Button
+                variant="text"
+                sx={{
+                  color: "text.primary",
+                  fontWeight: 500,
+                  textTransform: "none",
+                  borderRadius: 2,
+                  px: 2,
+                  "&:hover": {
+                    backgroundColor: "action.hover",
+                  },
+                }}
+                onClick={() => navigate("/provas/")}
+              >
+                Provas disponíveis
+              </Button>
 
-          <Button
-            variant="text"
-            sx={{
-              color: "text.primary",
-              fontWeight: 500,
-              textTransform: "none",
-              borderRadius: 2,
-              px: 2,
-              "&:hover": {
-                backgroundColor: "action.hover",
-              },
-            }}
-            onClick={() => navigate("/prova/cadastrar/")}
-          >
-            Cadastrar Prova
-          </Button>
-          </>
+              <Button
+                variant="text"
+                sx={{
+                  color: "text.primary",
+                  fontWeight: 500,
+                  textTransform: "none",
+                  borderRadius: 2,
+                  px: 2,
+                  "&:hover": {
+                    backgroundColor: "action.hover",
+                  },
+                }}
+                onClick={() => navigate("/prova/cadastrar/")}
+              >
+                Cadastrar Prova
+              </Button>
+            </>
           )}
 
           {usuario?.role?.toLowerCase() == "discente" && (
-          <>
-          <Button
-            variant="text"
-            sx={{
-              color: "text.primary",
-              fontWeight: 500,
-              textTransform: "none",
-              borderRadius: 2,
-              px: 2,
-              "&:hover": {
-                backgroundColor: "action.hover",
-              },
-            }}
-            onClick={() => navigate("/provas/")}
-          >
-            Provas disponíveis
-          </Button>
-          </>
+            <>
+              <Button
+                variant="text"
+                sx={{
+                  color: "text.primary",
+                  fontWeight: 500,
+                  textTransform: "none",
+                  borderRadius: 2,
+                  px: 2,
+                  "&:hover": {
+                    backgroundColor: "action.hover",
+                  },
+                }}
+                onClick={() => navigate("/provas/")}
+              >
+                Provas disponíveis
+              </Button>
+            </>
           )}
-          
+
           <Button
             variant="text"
             sx={{

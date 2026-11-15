@@ -13,8 +13,8 @@ import Chip from "@mui/material/Chip";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function AvailableQuizzList() {
-  let navigate = useNavigate();
-  const { usuario } = useAuth()
+  const navigate = useNavigate();
+  const { usuario } = useAuth();
   const [quizzesDisponiveis, setQuizzesDisponiveis] = useState({});
 
   const fetchQuizzes = async () => {
@@ -27,24 +27,53 @@ export default function AvailableQuizzList() {
   };
 
   const handleRole = (id) => {
-    if (usuario.role.toLowerCase() == "docente" || usuario.role.toLowerCase() == "gestor" || usuario.role.toLowerCase() == "admin") {
-      navigate(`/prova/visualizar/${id}/`)
+    const role = usuario?.role?.toLowerCase();
+    if (role === "docente" || role === "gestor" || role === "admin") {
+      navigate(`/prova/visualizar/${id}/`);
     } else {
-      navigate(`/prova/${id}/`)
+      navigate(`/prova/${id}/`);
     }
-  }
+  };
 
   useEffect(() => {
     fetchQuizzes();
   }, []);
 
+  const agora = new Date();
+
+  const provasValidas = Object.entries(quizzesDisponiveis || {}).filter(
+    ([, texto]) => {
+      if (usuario?.role?.toLowerCase() === "discente") {
+        return (
+          new Date(texto.prazo_inicio) < agora &&
+          new Date(texto.prazo_fim) > agora
+        );
+      }
+      return true;
+    },
+  );
+
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 3, p: 2 }}>
-      {Object.entries(quizzesDisponiveis || {}).map(([item, texto]) => (
+    <Box
+      sx={{
+        display: "grid",
+        gridTemplateColumns: {
+          xs: "1fr",
+          sm: "repeat(2, 1fr)",
+          md: "repeat(3, 1fr)",
+        },
+        gap: 3,
+        p: 2,
+      }}
+    >
+      {provasValidas.map(([item, texto]) => (
         <Card
           key={item}
           elevation={2}
           sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
             borderRadius: 2,
             border: "1px solid",
             borderColor: "divider",
@@ -52,9 +81,9 @@ export default function AvailableQuizzList() {
             "&:hover": { boxShadow: 4 },
           }}
         >
-          <CardContent>
+          <CardContent sx={{ flexGrow: 1 }}>
             {/* Cabeçalho do Card */}
-            <Stack direction="row" sx={{ mb: 1 }}>
+            <Stack direction="row" sx={{ mb: 1.5 }}>
               <Typography
                 variant="caption"
                 color="text.secondary"
@@ -102,7 +131,7 @@ export default function AvailableQuizzList() {
 
           <CardActions sx={{ px: 2, pb: 2 }}>
             <Button
-              id="roleAction"
+              id={`roleAction-${texto.id}`}
               variant="contained"
               fullWidth
               sx={{ textTransform: "none" }}

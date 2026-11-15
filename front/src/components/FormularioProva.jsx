@@ -11,7 +11,7 @@ export default function FormularioProva({
   return (
     <>
       <h2 key={dadosProva.id}>{dadosProva.enunciado}</h2>
-      <h2>Valor da Questão: {dadosProva.valor_questao} pontos</h2>
+      <h2>Valor da Questão: {Number(dadosProva.valor_questao).toFixed(2)} pontos</h2>
 
       <form>
         <FormControl sx={{ m: 3 }} component="fieldset" variant="standard">

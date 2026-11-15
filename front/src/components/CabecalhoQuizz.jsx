@@ -44,7 +44,7 @@ export default function CabecalhoQuizz({
           <h3>{descricao}</h3>
         </div>
         <div>
-          <h2>Tempo restante: {tempoTexto}</h2>
+          <h2>Tempo restante: {tempoTexto} horas</h2>
         </div>
       </div>
     </>
