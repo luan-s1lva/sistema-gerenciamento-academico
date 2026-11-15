@@ -127,6 +127,70 @@ class VisualizeAllQuizzes(APIView):
 
         return Response(resposta, status = status.HTTP_200_OK)
 
+#Caso de uso: Buscar nome do docente pelo id
+class GetUsuarioPeloId(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
+    def get(self, request, docente_id):
+        try:
+            obj_id = ObjectId(docente_id.strip())
+        except (InvalidId, TypeError) as e:
+            return Response({"erro": f"Formato inválido de ID: {str(e)}"}, status = status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            docente = (users.find({"_id": obj_id}))
+            lista_docente = list(docente)
+        except Exception as e:
+            print(f"[ERRO BANCO ATLAS]: {e}")
+            return Response({"erro": "Falha na comunicação com o banco de dados.", "detalhes": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        if not docente:
+            return Response({"erro": "Nenhum docente encontrado"}, status = status.HTTP_404_NOT_FOUND)
+
+        resposta = []
+        for docentef in lista_docente:
+            resposta.append({
+                "id": str(docentef["_id"]),
+                "nome": str(docentef.get("nome")),
+                "email": str(docentef.get("email")),
+                "matricula": str(docentef.get("matricula")),
+                "role": str(docentef.get("role")),
+                "departamento": str(docentef.get("departamento"))
+            })
+        return Response(resposta, status = status.HTTP_200_OK)
+
+class GetTurmaPeloId(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
+    def get(self, request, turma_id):
+        try:
+            obj_id = ObjectId(turma_id.strip())
+        except (InvalidId, TypeError) as e:
+            return Response({"erro": f"Formato inválido de ID: {str(e)}"}, status = status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            turma = (classes.find({"_id": obj_id}))
+            lista_turma = list(turma)
+        except Exception as e:
+            print(f"[ERRO BANCO ATLAS]: {e}")
+            return Response({"erro": "Falha na comunicação com o banco de dados.", "detalhes": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        if not turma:
+            return Response({"erro": "Nenhuma turma encontrado"}, status = status.HTTP_404_NOT_FOUND)
+
+        resposta = []
+        for turmaf in lista_turma:
+            resposta.append({
+                "id": str(turmaf["_id"]),
+                "nome": str(turmaf.get("nome_turma")),
+                "ano": str(turmaf.get("ano")),
+                "periodo": str(turmaf.get("periodo")),
+                "horario": str(turmaf.get("horario")),
+                "ativa": str(turmaf.get("ativa")),
+                "turma": str(turmaf.get("turma")),
+            })
+        return Response(resposta, status = status.HTTP_200_OK)
+    
 #Caso de uso: Entregar prova
 class SubmitQuizView(APIView):
     authentication_classes = []

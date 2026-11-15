@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import QuizCreateView, VisualizeTestView, SubmitQuizView, LoginLocalMongoView, VisualizesQuizzesFromClass, GetAllClasses, VisualizeAllQuizzes
+from .views import QuizCreateView, VisualizeTestView, SubmitQuizView, LoginLocalMongoView, VisualizesQuizzesFromClass, GetAllClasses, VisualizeAllQuizzes, GetUsuarioPeloId, GetTurmaPeloId
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -15,6 +15,10 @@ urlpatterns = [
 
     #turmas
     path('turmas/', GetAllClasses.as_view(), name = 'buscar-todas-turmas'),
+
+    #get info
+    path('buscar/docente/<str:docente_id>/', GetUsuarioPeloId.as_view(), name = 'buscar-usuario-pelo-id'),
+    path('buscar/turma/<str:turma_id>/', GetTurmaPeloId.as_view(), name = 'buscar-turma-pelo-id'),
 
     #login
     path('auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
