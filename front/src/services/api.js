@@ -5,28 +5,27 @@ const api = axios.create({
   // baseURL: "http://127.0.0.1:8000/api"
 });
 
+// Envia o token salvo em toda requisição
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("@token");
+  if (token && token !== "undefined" && token !== "null") {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
+// Se o backend recusar o token (401), limpa os dados e manda para o login
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.data?.code === "token_not_valid") {
+    if (error.response?.status === 401) {
       localStorage.removeItem("@token");
-      localStorage.removeItem("@refreshToken");
       localStorage.removeItem("@usuario");
       window.location.href = "/login";
     }
     return Promise.reject(error);
   }
 );
-
-// Adiciona o token em todas as requisições caso exista no localStorage
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("@token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
 
 export const buscarProva = async (quiz_id) => {
   const response = await api.get(`/prova/visualizar/${quiz_id}/`);

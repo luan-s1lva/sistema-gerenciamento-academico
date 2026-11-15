@@ -72,6 +72,8 @@ export default function Navbar() {
           </>
           )}
 
+          {usuario?.role?.toLowerCase() == "discente" && (
+          <>
           <Button
             variant="text"
             sx={{
@@ -88,6 +90,8 @@ export default function Navbar() {
           >
             Provas disponíveis
           </Button>
+          </>
+          )}
           
           <Button
             variant="text"
